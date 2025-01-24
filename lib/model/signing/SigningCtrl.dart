@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:local_auth/local_auth.dart';
 import 'package:mobx/src/api/store.dart';
+import 'package:reef_chain_flutter/js_api_service.dart';
+import 'package:reef_chain_flutter/reef_api.dart';
 import 'package:reef_mobile_app/model/ReefAppState.dart';
 import 'package:reef_mobile_app/model/account/ReefAccount.dart';
 import 'package:reef_mobile_app/model/signing/signature_request.dart';
@@ -11,7 +13,6 @@ import 'package:reef_mobile_app/model/signing/signer_payload_json.dart';
 import 'package:reef_mobile_app/model/signing/signer_payload_raw.dart';
 import 'package:reef_mobile_app/model/signing/tx_decoded_data.dart';
 import 'package:reef_mobile_app/model/status-data-object/StatusDataObject.dart';
-import 'package:reef_mobile_app/service/JsApiService.dart';
 import 'package:reef_mobile_app/service/StorageService.dart';
 import 'package:reef_mobile_app/utils/functions.dart';
 
@@ -22,13 +23,13 @@ class SigningCtrl {
   static final SIGN_ERR_CANCELED = "_canceled";
   static final SIGN_ERR_EMPTY_MNEMONIC = "_empty-mnemonic-value";
   final SignatureRequests signatureRequests;
-  final JsApiService jsApi;
   final StorageService storage;
   static final LocalAuthentication localAuth = LocalAuthentication();
   final AccountModel accountModel;
+  final ReefChainApi reefChainApi;
 
-  SigningCtrl(this.jsApi, this.storage, this.signatureRequests, this.accountModel) {
-    jsApi.jsTxSignatureConfirmationMessageSubj.listen((jsApiMessage) {
+  SigningCtrl(this.storage, this.signatureRequests, this.accountModel,this.reefChainApi) {
+    reefChainApi.reefState.signingApi.jsTxSignatureConfirmationMessageSubj.listen((jsApiMessage) {
       var signatureRequest = _buildSignatureRequest(jsApiMessage);
       if (signatureRequest.payload is SignerPayloadJSON) {
         signatureRequest.decodeMethod();
@@ -55,16 +56,16 @@ class SigningCtrl {
   }
 
   Future<dynamic> signRaw(String address, String message) =>
-      jsApi.jsPromise('window.signApi.signRawPromise(`$address`, `$message`);');
+      reefChainApi.reefState.signingApi.signRaw(address, message);
 
   Future<dynamic> signPayload(String address, Map<String, dynamic> payload) =>
-      jsApi.jsPromise(
-          'window.signApi.signPayloadPromise(`$address`, ${jsonEncode(payload)})');
+      reefChainApi.reefState.signingApi.signPayload(address, payload);
 
-  Future<dynamic> decodeMethod(String data, {dynamic types})=>types==null?jsApi.jsPromise('window.utils.decodeMethod(`$data`)') : jsApi.jsPromise('window.utils.decodeMethod(`$data`, ${jsonEncode(types)})');
+  Future<dynamic> decodeMethod(String data, {dynamic types})=>types==null?reefChainApi.reefState.signingApi.decodeMethod(data) : 
+  reefChainApi.reefState.signingApi.decodeMethod(data,types:jsonEncode(types));
 
   Future<dynamic> bytesString(String bytes) =>
-      jsApi.jsPromise('window.utils.bytesString("$bytes")');
+      reefChainApi.reefState.signingApi.bytesString(bytes);
 
   Future<void> _confirmSignature(
       String sigConfirmationIdent, String address) async {
@@ -74,13 +75,12 @@ class SigningCtrl {
       return;
     }
     signatureRequests.remove(sigConfirmationIdent);
-    jsApi.confirmTxSignature(sigConfirmationIdent, account.mnemonic);
+    reefChainApi.reefState.signingApi.confirmTxSignature(sigConfirmationIdent, account.mnemonic);
   }
 
   Future<dynamic> sendNFT(String unresolvedFrom, String nftContractAddress,
       String from, String to, int nftAmount, int nftId) async {
-    return jsApi.jsObservable(
-        'window.transfer.sendNft("${unresolvedFrom}","${from}","${to}",${nftAmount},${nftId},"${nftContractAddress}")');
+    return reefChainApi.reefState.signingApi.sendNFT(unresolvedFrom, nftContractAddress, from, to, nftAmount, nftId);
   }
 
   Future<dynamic> getTypes(String genesisHash, String specVersion)async{
@@ -122,7 +122,7 @@ class SigningCtrl {
 
   void rejectSignature(String signatureIdent) {
     signatureRequests.remove(signatureIdent);
-    jsApi.rejectTxSignature(signatureIdent);
+    reefChainApi.reefState.signingApi.rejectTxSignature(signatureIdent);
   }
 
   Future<TxDecodedData> getTxDecodedData(dynamic payload, dynamic decodedMethod) async {

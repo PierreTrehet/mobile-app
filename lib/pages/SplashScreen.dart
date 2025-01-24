@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:reef_chain_flutter/js_api_service.dart';
+import 'package:reef_chain_flutter/reef_api.dart';
 import 'package:reef_mobile_app/components/introduction_page/hero_video.dart';
 import 'package:reef_mobile_app/model/StorageKey.dart';
 import 'package:reef_mobile_app/model/locale/LocaleCtrl.dart';
@@ -18,7 +20,6 @@ import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
 
 import '../main.dart';
 import '../model/ReefAppState.dart';
-import '../service/JsApiService.dart';
 import '../service/StorageService.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -28,12 +29,11 @@ typedef WidgetCallback = Widget Function();
 final navigatorKey = GlobalKey<NavigatorState>();
 
 class SplashApp extends StatefulWidget {
-  final JsApiService reefJsApiService = JsApiService.reefAppJsApi(onErrorCb: (){
-    print('JS CONNECTION ERRORORRRRR - RESET');
-  });
   WidgetCallback displayOnInit;
   final Widget heroVideo = const HeroVideo();
 
+  final ReefChainApi reefChainApi = ReefChainApi();
+  
   SplashApp({
     required Key key,
     required this.displayOnInit,
@@ -166,7 +166,7 @@ class _SplashAppState extends State<SplashApp> {
   Future<void> _initializeAsyncDependencies() async {
     final storageService = StorageService();
     final walletConnectService = WalletConnectService();
-    await ReefAppState.instance.init(widget.reefJsApiService, storageService, walletConnectService);
+    await ReefAppState.instance.init(storageService, walletConnectService,widget.reefChainApi);
     setState(() {
       appReady = true;
     });
@@ -206,7 +206,7 @@ class _SplashAppState extends State<SplashApp> {
     //TODO: Initialise the widget back
 
     return Stack(children: <Widget>[
-      widget.reefJsApiService.widget,
+      // reefJsApiService.widget,
       if ( (appReady == false || _isAuthenticated == false) ||
           _isFirstLaunch == null)
         Stack(
