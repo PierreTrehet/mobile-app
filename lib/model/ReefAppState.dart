@@ -65,46 +65,46 @@ class ReefAppState {
     await reefChainApi.ready.future;
 
     this.initStatusStream.add("observables...");
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 10));
     this.initStatusStream.add("network...");
     networkCtrl = NetworkCtrl(storage, model.network,_reefChainApi);
     firebaseAnalyticsCtrl = FirebaseAnalyticsCtrl(_reefChainApi);
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 10));
     stealthexCtrl = StealthexCtrl(model.stealthexModel,_reefChainApi);
     this.initStatusStream.add("tokens...");
     tokensCtrl = TokenCtrl(model.tokens,reefChainApi);
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 10));
     this.initStatusStream.add("account...");
     accountCtrl = AccountCtrl(storage, model.accounts,reefChainApi);
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 10));
     this.initStatusStream.add("signer...");
     signingCtrl = SigningCtrl(storage, model.signatureRequests, model.accounts,reefChainApi);
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 10));
     this.initStatusStream.add("transfers...");
     transferCtrl = TransferCtrl(reefChainApi);
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 10));
     this.initStatusStream.add("swap...");
     swapCtrl = SwapCtrl(model.swapSettings,reefChainApi);
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 10));
     this.initStatusStream.add("pools...");
     poolsCtrl = PoolsCtrl(model.pools,reefChainApi);
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 10));
     this.initStatusStream.add("metadata...");
     metadataCtrl = MetadataCtrl(reefChainApi);
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 10));
     this.initStatusStream.add("navigation...");
     navigationCtrl =
         NavigationCtrl(model.navigationModel, model.homeNavigationModel);
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 10));
     this.initStatusStream.add("state...");
 
 
     this.initStatusStream.add("config...");
     appConfigCtrl = AppConfigCtrl(storage, model.appConfig);
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 10));
     this.initStatusStream.add("locale...");
     localeCtrl = LocaleCtrl(storage, model.locale);
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 10));
     this.initStatusStream.add("storage...");
     storageCtrl = StorageCtrl(storage);
     await Future.delayed(Duration(milliseconds: 200));
