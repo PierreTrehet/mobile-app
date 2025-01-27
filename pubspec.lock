@@ -1168,10 +1168,11 @@ packages:
   reef_chain_flutter:
     dependency: "direct main"
     description:
-      path: "../reef-chain-flutter"
-      relative: true
-    source: path
-    version: "0.0.4"
+      name: reef_chain_flutter
+      sha256: "1b0225298b2c577cd12f13941e2ffd7ac4d675041b0e848f018b4aa5c7ded7cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   restart_app:
     dependency: "direct main"
     description:
