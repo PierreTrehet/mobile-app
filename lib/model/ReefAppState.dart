@@ -49,6 +49,7 @@ class ReefAppState {
   late FirebaseAnalyticsCtrl firebaseAnalyticsCtrl;
   late StealthexCtrl stealthexCtrl;
   late ReefChainApi reefChainApi;
+  Completer<void>? _initCall;
   StreamController<String> initStatusStream = StreamController<String>();
 
   ReefAppState._();
@@ -56,6 +57,11 @@ class ReefAppState {
   static ReefAppState get instance => _instance ??= ReefAppState._();
 
   init(StorageService storage, WalletConnectService walletConnect,ReefChainApi _reefChainApi) async {
+    if(_initCall!=null){
+      await _initCall!.future;
+     return;
+    }
+    _initCall = Completer();
     this.storage = storage;
     this.reefChainApi = _reefChainApi;
     this.walletConnect = walletConnect;
@@ -118,6 +124,7 @@ class ReefAppState {
 
     try {
       await _initReefState(currentNetwork,_reefChainApi);
+      _initCall!.complete(null);
     } catch (e){
       this.initStatusStream.add("error state= ${e.toString()}");
     }
