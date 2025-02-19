@@ -16,7 +16,6 @@ import 'package:reef_mobile_app/pages/introduction_page.dart';
 import 'package:reef_mobile_app/service/WalletConnectService.dart';
 import 'package:reef_mobile_app/utils/styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
 
 import '../main.dart';
 import '../model/ReefAppState.dart';
@@ -134,8 +133,8 @@ class _SplashAppState extends State<SplashApp> {
     getLocale().then((value) => setLocale(value));
 
     _initializeAsyncDependencies();
-    initAuthentication();
-    _passwordController.addListener(() {
+      initAuthentication();
+      _passwordController.addListener(() {
         setState(() {
           password = _passwordController.text;
         });
@@ -164,12 +163,12 @@ class _SplashAppState extends State<SplashApp> {
   }
 
   Future<void> _initializeAsyncDependencies() async {
-    final storageService = StorageService();
-    final walletConnectService = WalletConnectService();
-    await ReefAppState.instance.init(storageService, walletConnectService,widget.reefChainApi);
-    setState(() {
-      appReady = true;
-    });
+       final storageService = StorageService();
+       final walletConnectService = WalletConnectService();
+       await ReefAppState.instance.init(storageService, walletConnectService,widget.reefChainApi);
+       setState(() {
+         appReady = true;
+       });
   }
 
   @override
@@ -195,6 +194,8 @@ class _SplashAppState extends State<SplashApp> {
   }
 
   Widget _buildBody() {
+    debugPrint('----------> $_isGifFinished');
+
     if (_hasError) {
       return Center(
         child: ElevatedButton(
@@ -256,12 +257,15 @@ class _SplashAppState extends State<SplashApp> {
                         initialData: ".",
                         builder: (BuildContext context,AsyncSnapshot<String> snapshot) {
                           if(snapshot.hasData) {
+                            debugPrint('connectionState ----------> ${snapshot.connectionState}');
                             return Text(snapshot.data??"...",
                               style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 16,
                                   color: Styles.textLightColor,
                                   decoration: TextDecoration.none),);
+                          }else if(snapshot.hasError){
+                            debugPrint('error ----------> ${snapshot.error.toString()}');
                           }
                           return Text("..",
                             style: GoogleFonts.poppins(

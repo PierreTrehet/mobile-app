@@ -10,9 +10,9 @@ import 'package:reef_mobile_app/model/ReefAppState.dart';
 import 'package:reef_mobile_app/model/status-data-object/StatusDataObject.dart';
 import 'package:reef_mobile_app/utils/functions.dart';
 import 'package:reef_mobile_app/utils/styles.dart';
-import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:reef_mobile_app/utils/account_box.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 
 class WalletConnectPage extends StatefulWidget {
   const WalletConnectPage({Key? key}) : super(key: key);
