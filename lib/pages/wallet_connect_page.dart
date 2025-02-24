@@ -15,7 +15,7 @@ import 'package:reef_mobile_app/utils/account_box.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 
 class WalletConnectPage extends StatefulWidget {
-  const WalletConnectPage({Key? key}) : super(key: key);
+  const WalletConnectPage({super.key});
 
   @override
   State<WalletConnectPage> createState() => _WalletConnectPageState();
@@ -245,11 +245,11 @@ class CustomSessionTile extends StatelessWidget {
   final VoidCallback onDelete;
 
   const CustomSessionTile({
-    Key? key,
+    super.key,
     required this.session,
     required this.iconSrc,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
