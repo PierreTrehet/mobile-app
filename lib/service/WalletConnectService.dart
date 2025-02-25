@@ -9,7 +9,7 @@ import 'package:reef_mobile_app/model/network/NetworkCtrl.dart';
 import 'package:reef_mobile_app/service/AppLifecycleManager.dart';
 import 'package:reef_mobile_app/service/LocalNotificationService.dart';
 import 'package:reef_mobile_app/utils/constants.dart';
-import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 const String PROJECT_ID = 'b20768c469f63321e52923a168155240';
@@ -21,7 +21,7 @@ String MAINNET_CHAIN_ID = 'reef:${Constants.REEF_MAINNET_GENESIS_HASH.substring(
 String TESTNET_CHAIN_ID = 'reef:${Constants.REEF_TESTNET_GENESIS_HASH.substring(2, 34)}';
 
 class WalletConnectService {
-  Web3Wallet? _web3Wallet;
+  ReownWalletKit? _web3Wallet;
 
   ValueNotifier<List<SessionData>> sessions =
       ValueNotifier<List<SessionData>>([]);
@@ -32,8 +32,8 @@ class WalletConnectService {
 
   Future<void> _initAsync() async {
     // Create the web3wallet
-    _web3Wallet = Web3Wallet(
-      core: Core(
+    _web3Wallet = ReownWalletKit(
+      core: ReownCore(
         projectId: PROJECT_ID,
       ),
       metadata: const PairingMetadata(
@@ -94,7 +94,7 @@ class WalletConnectService {
     _web3Wallet!.onSessionExpire.unsubscribe(_onSessionExpire);
   }
 
-  Web3Wallet getWeb3Wallet() {
+  ReownWalletKit getWeb3Wallet() {
     return _web3Wallet!;
   }
 
@@ -125,7 +125,7 @@ class WalletConnectService {
       showAlertModal("Error", ["Invalid namespaces in session proposal"]);
       return _web3Wallet!.rejectSession(
         id: args.id,
-        reason: Errors.getSdkError(Errors.USER_REJECTED)
+        reason: Errors.getSdkError(Errors.USER_REJECTED).toSignError()
       );
     }
     if (args.params.requiredNamespaces.entries.length > 1 ||
@@ -133,7 +133,7 @@ class WalletConnectService {
       showAlertModal("Error", ["Invalid namespaces in session proposal"]);
       return _web3Wallet!.rejectSession(
         id: args.id,
-        reason: Errors.getSdkError(Errors.UNSUPPORTED_NAMESPACE_KEY)
+        reason: Errors.getSdkError(Errors.UNSUPPORTED_NAMESPACE_KEY).toSignError()
       );
     }
     // Chains validations
@@ -145,7 +145,7 @@ class WalletConnectService {
       showAlertModal("Error", ["Invalid chain IDs in session proposal"]);
       return _web3Wallet!.rejectSession(
         id: args.id,
-        reason: Errors.getSdkError(Errors.UNSUPPORTED_CHAINS)
+        reason: Errors.getSdkError(Errors.UNSUPPORTED_CHAINS).toSignError()
       );
     }
     // Methods validations
@@ -155,7 +155,7 @@ class WalletConnectService {
       showAlertModal("Error", ["Unsupported methods in session proposal"]);
       return _web3Wallet!.rejectSession(
         id: args.id,
-        reason: Errors.getSdkError(Errors.UNSUPPORTED_METHODS)
+        reason: Errors.getSdkError(Errors.UNSUPPORTED_METHODS).toSignError()
       );
     }
     // Events validations
@@ -165,7 +165,7 @@ class WalletConnectService {
       showAlertModal("Error", ["Unsupported events in session proposal"]);
       return _web3Wallet!.rejectSession(
         id: args.id,
-        reason: Errors.getSdkError(Errors.UNSUPPORTED_EVENTS)
+        reason: Errors.getSdkError(Errors.UNSUPPORTED_EVENTS).toSignError()
       );
     }
 
@@ -175,7 +175,7 @@ class WalletConnectService {
       showAlertModal("Error", ["No account selected"]);
       return _web3Wallet!.rejectSession(
         id: args.id,
-        reason: Errors.getSdkError(Errors.USER_REJECTED)
+        reason: Errors.getSdkError(Errors.USER_REJECTED).toSignError()
       );
     }
 
@@ -217,7 +217,7 @@ class WalletConnectService {
     } else {
       _web3Wallet!.rejectSession(
         id: args.id,
-        reason: Errors.getSdkError(Errors.USER_REJECTED)
+        reason: Errors.getSdkError(Errors.USER_REJECTED).toSignError()
       );
     }
   }
@@ -299,7 +299,7 @@ class WalletConnectService {
   Future<void> disconnectSession(String topic) async {
     await _web3Wallet!.disconnectSession(
       topic: topic,
-      reason: Errors.getSdkError(Errors.USER_DISCONNECTED),
+      reason: Errors.getSdkError(Errors.USER_DISCONNECTED).toSignError(),
     );
   }
 }

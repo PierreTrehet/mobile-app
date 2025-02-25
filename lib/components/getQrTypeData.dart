@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+// import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:reef_mobile_app/components/modal.dart';
 import 'package:reef_mobile_app/components/modals/change_password_modal.dart';
 import 'package:reef_mobile_app/components/modals/import_account_from_qr.dart';
@@ -13,7 +14,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:reef_mobile_app/utils/functions.dart';
 import 'package:reef_mobile_app/utils/password_manager.dart';
 import 'package:reef_mobile_app/utils/styles.dart';
-import 'package:qr_code_tools/qr_code_tools.dart';
+// import 'package:qr_code_tools/qr_code_tools.dart';
 
 class QrDataDisplay extends StatefulWidget {
   ReefQrCodeType? expectedType;
@@ -27,7 +28,7 @@ class QrDataDisplay extends StatefulWidget {
 
 class _QrDataDisplayState extends State<QrDataDisplay> {
   final GlobalKey _gLobalkey = GlobalKey();
-  QRViewController? controller;
+  MobileScannerController? controller;
   ReefQrCode? qrCodeValue;
   String? qrTypeLabel;
   var numOfTrials = 3;
@@ -132,10 +133,10 @@ class _QrDataDisplayState extends State<QrDataDisplay> {
     });
   }
 
-  void qr(QRViewController controller) async {
+  void qr(MobileScannerController controller) async {
     this.controller = controller;
-    var scanRes = await controller.scannedDataStream.first;
-    await handleQrCodeData(scanRes.code!);
+    var scanRes = await controller.barcodes.first;
+    await handleQrCodeData(scanRes.barcodes.first.rawValue!);
     this.controller?.dispose();
   }
 
@@ -164,7 +165,11 @@ class _QrDataDisplayState extends State<QrDataDisplay> {
                               width: 400,
                               height: 300,
                               child:
-                                  QRView(key: _gLobalkey, onQRViewCreated: qr),
+                              MobileScanner(key: _gLobalkey, controller: controller,
+                              onDetect: (BarcodeCapture barcodeData) async {
+                                var scanRes = barcodeData.barcodes.first;
+                                await handleQrCodeData(scanRes.rawValue!);
+                              },),
                             ),
                           ),
                         ),
@@ -303,8 +308,10 @@ Future<String?> scanFile() async {
   if (pickedFile != null) {
     final filePath = pickedFile.files.single.path;
     if (filePath != null) {
-      var res = await QrCodeToolsPlugin.decodeFrom(filePath);
-      return res;
+      // var res = await QrCodeToolsPlugin.decodeFrom(filePath);
+      var res = await MobileScannerController().analyzeImage(filePath);
+      debugPrint('${res?.barcodes.first.rawValue}');
+      return res?.barcodes.first.rawValue;
     }
   }
   } catch (e) {
