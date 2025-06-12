@@ -443,14 +443,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.1"
-  flutter_js:
-    dependency: "direct main"
-    description:
-      name: flutter_js
-      sha256: "0d22d73a474b5b80c3ab5508e7c3eab6fb20beea9dec45bbd21088cfd27a5e61"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.8.3"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -1267,7 +1259,7 @@ packages:
     source: hosted
     version: "1.1.5+1"
   reown_yttrium:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: reown_yttrium
       sha256: e59d9e8dbad8e2c420c201719da12bca528c38ecab9571364d5b6d18715ce773
@@ -1503,14 +1495,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
-  sync_http:
-    dependency: transitive
-    description:
-      name: sync_http
-      sha256: "7f0cd72eca000d2e026bcd6f990b81d0ca06022ef4e32fb257b30d3d1014a961"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.1"
   synchronized:
     dependency: transitive
     description:
