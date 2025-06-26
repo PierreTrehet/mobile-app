@@ -5,7 +5,7 @@ import 'package:reef_mobile_app/components/page_layout_anukul.dart';
 import 'package:reef_mobile_app/service/AppLifecycleManager.dart';
 import 'package:reef_mobile_app/service/LocalNotificationService.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reef_mobile_app/flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,9 +29,8 @@ class MyApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [
-            Locale('en', ''),
-          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+
           home: SplashApp(
             key: UniqueKey(),
             displayOnInit: () {
